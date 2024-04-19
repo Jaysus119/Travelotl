@@ -12,12 +12,14 @@ const ItineraryPage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const fetchItinerary = async () => {
+      console.log(localStorage.getItem('userToken'));
       try {
         console.log('data sent to back end server to make API request');
-        const response = await fetch('/api/trip', {
+        const response = await fetch('/api/trip/build', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
           },
           body: JSON.stringify(formData)
         });
