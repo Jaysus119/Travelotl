@@ -19,8 +19,6 @@ const connectDB = async () => {
 
 connectDB();
 
-// TEST CODE - CAN DELETE WHEN FINISHED
-// const tripController = require('./controllers/itinerary_controller');
 
 const app = express();
 const port = 3000;

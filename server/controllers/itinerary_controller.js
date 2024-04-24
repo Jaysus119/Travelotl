@@ -28,22 +28,22 @@ const tripController = {
     console.log("buildTrip invoked");
     const { destination, startDate, endDate, activities, budget, travelers, groupDescription } = req.body;
     res.locals.tripName = `${destination} from ${startDate} to ${endDate}`;
-    // Update prompt below to reflect req.body information - DONE (J.H.)
+    
     const prompt = `Make an itinerary for a trip for ${travelers} to ${destination} from ${startDate} until ${endDate}. I have a budget of ${budget}. Include the following types of attractions: ${activities.join(', ')} for a ${groupDescription}. Organize the itinerary by the following times of day: morning, afternoon, and evening. Recommend specific places of interest with their address. Limit cross-city commutes by grouping places of interest by geography for each day. Output the response in json format following this schema:
-    // {
-    //   itinerary: {
-    //     date: {
-    //       time of day: {
-    //         activity: string,
-    //         description: string,
-    //         address: string,
-    //       }
-    //     }
-    //   }
-    // }
-    // Thank you.`;
+    {
+      itinerary: {
+        date: {
+          time of day: {
+            activity: string,
+            description: string,
+            address: string,
+          }
+        }
+      }
+    }
+    Thank you.`;
 
-    // console.log(prompt);
+    
     try {
       const completion = await openai.chat.completions.create({
         messages: [{"role": "system", "content": "You are a helpful travel planning assistant."},
