@@ -1,17 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit';
+/**
+ * @module itineraryReducer
+ * @description reducer for itinerary data: updates the itinerary state
+ */
 
+import { createSlice } from "@reduxjs/toolkit";
+
+// Initialize empty state
 const initialState = {};
 
 const itinerarySlice = createSlice({
-  name: 'itinerary',
-  initialState,
-  reducers: {
-    updateItinerary(state, action) {
-      state.itinerary = action.payload;
-    },
-  },
+    name: 'itinerary',
+    initialState,
+    reducers: {
+        // Update the itinerary data
+        updateItinerary(state, action) {
+            // Assign to 'itinerary' key on state the action payload
+            state.itinerary = action.payload;
+        }
+    }
 });
 
-export const { actions, reducer } = itinerarySlice;
-export const { updateItinerary } = actions;
-export default reducer;
+// Export the actions and reducer
+export const { updateItinerary } = itinerarySlice.actions;
+export default itinerarySlice.reducer
