@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+// const User = require('../models/User');
+const db = require('../models/itineraryModels')
 
 const registerUser = async (req, res) => {
   console.log('request to register user', req.body);
@@ -14,7 +15,8 @@ const registerUser = async (req, res) => {
     }
 
     // check if user already exists
-    const userExists = await User.findOne({email});
+    const userQuery = `SELECT username FROM users WHERE username = ${email};`;
+    const userExists = await db.query(userQuery);
 
     // console.log(userExists);
     if (userExists) {
@@ -25,9 +27,11 @@ const registerUser = async (req, res) => {
     // hash password using bcrypt
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    const insertUser = `INSERT INTO users (password, username, firstName, lastName)
+    VALUES ${hashedPassword, email, firstName, lastName}`
 
     // create user
-    const user = await User.create({firstName, lastName, email, password: hashedPassword});
+    const user = db.query(insertUser)
 
     if (user) {
       res.status(201).json({ _id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email, token: generateToken(user._id) })
