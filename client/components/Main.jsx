@@ -1,5 +1,6 @@
-import Header from "./Header";
+import Header from "./Header.jsx";
 import { Link } from "react-router-dom";
+import React from 'react';
 
 const Main = () => {
   return (

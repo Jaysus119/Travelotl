@@ -1,5 +1,5 @@
 import video from "../assets/loader.mp4"
-
+import React from 'react';
 
 const Loader = () => {
   return (

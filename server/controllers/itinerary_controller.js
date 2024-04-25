@@ -1,5 +1,6 @@
 //Controller to call the Open AI API for information on destinations for the itinerary
 // import { Configuration, OpenAI } from "openai";
+require('dotenv').config();
 const OpenAI = require('openai');
 const express = require('express');
 const app = express();
