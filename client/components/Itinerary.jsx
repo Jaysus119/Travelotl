@@ -1,3 +1,4 @@
+import React from 'react';
 const Itinerary = ({ itinerary }) => {
   // console.log("Itinerary Component:", itinerary.itinerary.itinerary);
   if (itinerary) return (
