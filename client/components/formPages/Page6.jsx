@@ -1,8 +1,9 @@
+
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { updateItinerary } from '../../reducers/itineraryReducer';
-import Loader from '../Loader';
-
+import Loader from '../Loader.jsx';
+import React from 'react';
 import { updateGroupDescription } from '../../reducers/tripReducer';
 import { useState } from 'react';
 

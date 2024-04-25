@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-
-import Header from "./Header";
-import Itinerary from "./Itinerary"
+import React from 'react';
+import Header from "./Header.jsx";
+import Itinerary from "./Itinerary.jsx"
 
 
 const ItineraryPage = () => {

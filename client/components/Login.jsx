@@ -1,4 +1,4 @@
-import Header from "./Header";
+import Header from "./Header.jsx";
 import { useNavigate } from 'react-router-dom';
 
 import React, { useState } from 'react';
