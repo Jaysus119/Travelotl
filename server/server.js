@@ -1,39 +1,59 @@
 const express = require ('express');
 const path = require ('path');
-const mongoose = require('mongoose');
-// const dotenv = require('dotenv')
+const { registerUser } = require ('./controllers/userController.js');
+
 require('dotenv').config();
 
 //use environmental variables
 // dotenv.config({ path: './config.env' });
 
-// connect to MongoDB cluster
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(`${process.env.MONGO_URI}`);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
-}
 
-connectDB();
+//move routes to server.js
 
 
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client')));
-app.use(express.urlencoded({ extended: true })); //parse urlencoded bodies
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/trip', require('./routes/itineraryRoutes'));
+// Root
+// app.get('/', (res))
+
+// Register user
+app.post('/api/users/', registerUser, (req, res) => {
+  console.log('made it to server.js')
+  return res.sendStatus(200)
+  // .json({userToken: res.locals.userToken})
+});
+
+// Login
+
+// Itinerary
+
+
+//app.use('/api/trip', require('./routes/itineraryRoutes'));
 
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname,'../index.html'))
 })
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
 
-app.listen(port, () => console.log(`Server is running on ${port}`));
+//global error handler
+app.use((err, req, res, next) => {
+  const defaultErr = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occured' },
+  };
+  const errorObj = Object.assign({}, defaultErr, err);
+  console.log(errorObj.log);
+  return res.status(errorObj.status).json(errorObj.message);
+});
+
+app.listen(PORT, () => console.log(`Server is running on ${PORT}...`));

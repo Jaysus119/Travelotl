@@ -1,11 +1,7 @@
-//Controller to call the Open AI API for information on destinations for the itinerary
-// import { Configuration, OpenAI } from "openai";
 require('dotenv').config();
 const OpenAI = require('openai');
 const express = require('express');
 const app = express();
-// const Itinerary = require('../models/Itinerary');
-// const { recompileSchema } = require('../models/User');
 const db = require('../models/itineraryModels')
 
 const openai = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
