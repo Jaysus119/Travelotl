@@ -1,59 +1,56 @@
 const express = require ('express');
 const path = require ('path');
-const { registerUser } = require ('./controllers/userController.js');
-
+// const { registerUser } = require ('./controllers/userController.js');
 require('dotenv').config();
 
-//use environmental variables
-// dotenv.config({ path: './config.env' });
+// ROUTER DECLARATIONS
+const authRouter = require('./routers/authRouter.js');
+const apiRouter = require('./routers/apitRouter.js');
+const itnryRouter = require('./routers/itnryRouter.js')
 
-
-//move routes to server.js
-
-
+// SERVER DECLARATIONS
 const app = express();
 const PORT = 3000;
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'client')));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+   .use(express.static(path.join(__dirname, 'client')))
+   .use(express.urlencoded({ extended: true }))
 
-// Root
-// app.get('/', (res))
+// ROOT ROUTE FOR FILE SERVING (NON-WEBPACK)
+   .get('/', function (req, res) {
+        res.sendFile(path.join(__dirname,'../index.html'))
+      }
+    )
 
-// Register user
-app.post('/api/users/', registerUser, (req, res) => {
-  console.log('made it to server.js')
-  return res.sendStatus(200)
-  // .json({userToken: res.locals.userToken})
-});
+// ROUTER ROUTING
+   .use('/auth', authRouter)
+   .use('/api', apiRouter)
+   .use('/itnryRouter', itnryRouter)
 
-// Login
+// 404 HANDLER  (NOTE: tobe modified for OAuth)
+   .use(
+      (req, res) => {
+        res.status(404).send('Not Found');
+      }
+    )
 
-// Itinerary
+//GLOBAL ERROR HANDLER
+   .use(
+      (err, req, res, next) => {
+        const defaultErr = {
+          log: 'Express error handler caught unknown middleware error',
+          status: 500,
+          message: { err: 'An error occured' },
+        };
+        const errorObj = Object.assign({}, defaultErr, err);
+        console.log(errorObj.log);
+        return res.status(errorObj.status).json(errorObj.message);
+      }
+    )
 
-
-//app.use('/api/trip', require('./routes/itineraryRoutes'));
-
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname,'../index.html'))
-})
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send('Not Found');
-});
-
-//global error handler
-app.use((err, req, res, next) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occured' },
-  };
-  const errorObj = Object.assign({}, defaultErr, err);
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
-});
-
-app.listen(PORT, () => console.log(`Server is running on ${PORT}...`));
+//START SERVER COMMAND
+   .listen(PORT, 
+      () => {
+        console.log(`Server is running on ${PORT}...`)
+      }
+    );
