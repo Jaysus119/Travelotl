@@ -1,15 +1,13 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const db = require('../models/itineraryModels')
 
+const db = require('../models/itnryModel')
 
+const userController = {};
 
-const registerUser = async (req, res, next) => {
-  // console.log('request to register user', req.body);
+userController.registerUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, username, password } = req.body;
-
-    console.log('firstName: ', firstName)
+    const { firstName, lastName, username, password, email } = req.body.userInfo;
 
     // check that all fields have been provided
     if (!firstName || !lastName || !username || !password) {
@@ -109,4 +107,4 @@ const registerUser = async (req, res, next) => {
 //   return jwt.sign({ id }, process.env.JWT_SECRET, {expiresIn: '30d'})
 // }
 
-module.exports = { registerUser };
+module.exports = userController;

@@ -1,12 +1,19 @@
 const express = require('express');
 const authRouter = express.Router();
+const userController = require('./../controllers/userController.js')
 
 // REGISTER
 authRouter
   .post('/register',
     (req, res, next) =>{
+      const { firstName, lastName, username, password, email } = req.body.userInfo;
+      console.log(`Received: ${firstName}, ${lastName}, ${username}, ${password}, ${email}`)
       console.log("Welcome to the [/register] endpoint.")
       return next();
+    },
+    userController.registerUser,
+    (req, res, next ) => {
+
     },
     (req, res) =>{
 

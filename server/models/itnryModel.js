@@ -17,9 +17,8 @@ pool.connect((err, client, release) => {
       return console.error('Error acquiring client', err.stack);
   }
   console.log('Connected to SQL database');
-  release();  // Release the client back to the pool
+  release(); 
 });
-
 
 module.exports = {
     query: (text, params, callback) => {

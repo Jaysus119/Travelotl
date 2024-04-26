@@ -8,7 +8,7 @@ require('dotenv').config();
 // ROUTER DECLARATIONS
 const authRouter = require('./routers/authRouter.js');
 const apiRouter = require('./routers/apiRouter.js');
-const itnryRouter = require('./routers/itnryRouter.js')
+const itnryRouter = require('./routers/itnryRouter.js');
 
 // SERVER DECLARATIONS
 const app = express();

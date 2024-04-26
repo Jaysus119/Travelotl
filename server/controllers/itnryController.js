@@ -1,10 +1,12 @@
-require('dotenv').config();
-const OpenAI = require('openai');
 const express = require('express');
-const app = express();
-const db = require('../models/itineraryModels')
+require('dotenv').config();
 
+const app = express();
+
+const OpenAI = require('openai');
 const openai = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
+
+const db = require('../models/itnryModel')
 
 // TEST DATA - DELETE WHEN FINISHEDßß
 // const travelPlans = {

@@ -1,8 +1,8 @@
 const express = require('express');
 const itnryRouter = express.Router();
 
-const tripController = require('../controllers/itinerary_controller');
-const authController = require('../controllers/auth_controller');
+const tripController = require('../controllers/itnryController');
+const authController = require('../controllers/authController');
 
 itnryRouter
   .post('/build', 
