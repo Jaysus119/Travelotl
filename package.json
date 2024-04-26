@@ -8,11 +8,11 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "concurrently \"webpack serve --open\" \"nodemon server/server.js\"",
     "build": "webpack",
-    "serve": "nodemon server/server.js",
-    "server": "nodemon",
-    "start": "webpack serve --hot --progress"
+    "backend:start": "nodemon server/server.js",
+    "frontend:start": "webpack serve --hot --progress",
+    "start": "concurrently \"npm backend:start\" \"npm frontend:start\"",
+    "dev": "concurrently \"webpack serve --open\" \"nodemon server/server.js\""
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",

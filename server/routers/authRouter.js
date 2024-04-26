@@ -2,44 +2,41 @@ const express = require('express');
 const authRouter = express.Router();
 
 // REGISTER
-authRouter.post('/register',
-  (req, res, next) =>{
-    console.log("Welcome to the [/register] endpoint.")
-    return next();
-  },
-  (req, res) =>{
+authRouter
+  .post('/register',
+    (req, res, next) =>{
+      console.log("Welcome to the [/register] endpoint.")
+      return next();
+    },
+    (req, res) =>{
 
-    return res.status(200).json("You have exited the [/register] endpoint.")
-  }
-)
-
+      return res.status(200).json("You have exited the [/register] endpoint.")
+    }
+  )
 
 // LOGIN
-authRouter.post('/login',
-  (req, res, next) =>{
-    console.log("Welcome to the [/login] endpoint.")
-    return next();
-  },
-  (req, res) =>{
+  .post('/login',
+    (req, res, next) =>{
+      console.log("Welcome to the [/login] endpoint.")
+      return next();
+    },
+    (req, res) =>{
 
-    return res.status(200).json("You have exited the [/login] endpoint.")
-  }
-)
-
-
+      return res.status(200).json("You have exited the [/login] endpoint.")
+    }
+  )
 
 // LOGOUT
-authRouter.post('/logout',
-  (req, res, next) =>{
-    console.log("Welcome to the [/logout] endpoint.")
-    return next();
-  },
-  (req, res) =>{
+  .post('/logout',
+    (req, res, next) =>{
+      console.log("Welcome to the [/logout] endpoint.")
+      return next();
+    },
+    (req, res) =>{
 
-    return res.status(200).json("You have exited the [/logout] endpoint.")
-  }
-)
-
+      return res.status(200).json("You have exited the [/logout] endpoint.")
+    }
+  )
 
 module.exports = authRouter;
 
