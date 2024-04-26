@@ -1,28 +1,68 @@
+/*
+*   DOCUMENTATION OF SCHEMA AND DB: 
+*   https://github.com/CN-Kids-Next-Door/notes-doc/blob/main/sqlReadme.md
+*/
+
 const { Pool } = require('pg');
 
-const pool = new Pool({
-    user: process.env.POSTGRES_USER,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: process.env.POSTGRES_PORT,
-    host: process.env.POSTGRES_HOST,
-    max: process.env.POSTGRES_MAX,
-    idleTimeoutMillis: process.env.POSTGRES_IDLETIMEOUTMILLIS,
-    connectionTimeoutMillis: process.env.POSTGRES_CONNECTIONTIMEOUTMILLIS,
-});
+const {
+  POSTGRES_USER: user,
+  POSTGRES_DB: database,
+  POSTGRES_PASSWORD: password,
+  POSTGRES_PORT: port,
+  POSTGRES_HOST: host,
+  POSTGRES_MAX: max,
+  POSTGRES_IDLETIMEOUTMILLIS: idleTimeoutMillis,
+  POSTGRES_CONNECTIONTIMEOUTMILLIS: connectionTimeoutMillis
+} = process.env;
 
-//documentation and schema of database: https://github.com/CN-Kids-Next-Door/notes-doc/blob/main/sqlReadme.md
-pool.connect((err, client, release) => {
-  if (err) {
-      return console.error('Error acquiring client', err.stack);
-  }
-  console.log('Connected to SQL database');
-  release(); 
-});
+const poolConfig = {
+  user,
+  database,
+  password,
+  port,
+  host,
+  max,
+  idleTimeoutMillis,
+  connectionTimeoutMillis
+};
+
+const pool = new Pool(poolConfig);
+
+pool
+// PER CONNECTION LOGGING
+  .on('connect', 
+    () => {
+      console.log(`Connected to database on host ${host}:${port}`);
+    }
+  )
+// PER CONNECTION ERROR HANDLING FOR UNEXPECTED ISSUES
+  .on('error', 
+    (err, client) => {
+      console.error('Unexpected error on idle client', err);
+      process.exit(-1); // Optionally replace with more nuanced handling
+    }
+  )
+
+// HEALTH CHECK (PER 5 MIN)
+setInterval(() => {
+    pool.query('SELECT 1', (err, res) => {
+        if (err) {
+            console.error('Health check failed:', err);
+        } else {
+            console.log('Health check successful');
+        }
+    });
+}, 300000);
 
 module.exports = {
-    query: (text, params, callback) => {
-        console.log('executed query', text);
-        return pool.query(text, params, callback);
-    }
+  query: (text, params, callback) => {
+    const start = Date.now();
+    console.log(`Starting query at ${new Date(start)}: ${text}`);
+    return pool.query(text, params, (err, res) => {
+        const duration = Date.now() - start;
+        console.log(`Query executed in ${duration}ms`);
+        callback(err, res);
+    });
+  }
 };
