@@ -1,5 +1,9 @@
-import video from "../assets/loader.mp4"
-import React from 'react';
+/**
+ * @module Loader
+ * @description itinerary loading animation
+ */
+
+import video from '../assets/loader.mp4';
 
 const Loader = () => {
   return (
