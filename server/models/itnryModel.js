@@ -33,24 +33,29 @@ pool
 // PER CONNECTION LOGGING
   .on('connect', 
     () => {
-      console.log(`Connected to database on host ${host}:${port}`);
+      console.log(`SQL-(CONNECTION STARTED): Connected to database on host ${host}:${port}`);
     }
   )
 // PER CONNECTION ERROR HANDLING FOR UNEXPECTED ISSUES
   .on('error', 
     (err, client) => {
-      console.error('Unexpected error on idle client', err);
-      process.exit(-1); // Optionally replace with more nuanced handling
+      console.error('SQL-(CONNECTION ERROR): Unexpected error on idle client', err);
+      process.exit(-1);
     }
   )
+// PER CONNECTION CLOSE MESSAGE
+  .on('remove', (client) => {
+    console.log('SQL-(CONNECTION ENDED): Client removed from pool');
+  }
+);
 
 // HEALTH CHECK (PER 5 MIN)
 setInterval(() => {
     pool.query('SELECT 1', (err, res) => {
         if (err) {
-            console.error('Health check failed:', err);
+            console.error('SQL: Health check failed:', err);
         } else {
-            console.log('Health check successful');
+            console.log('SQL: Health check successful');
         }
     });
 }, 300000);
@@ -58,7 +63,8 @@ setInterval(() => {
 module.exports = {
   query: (text, params, callback) => {
     const start = Date.now();
-    console.log(`Starting query at ${new Date(start)}: ${text}`);
+    console.log(`SQL-(DEBUG): Starting query at ${new Date(start)}.`);
+    console.log(`SQL-(DEBUG): SQL Query was: ${text}`);
     return pool.query(text, params, (err, res) => {
         const duration = Date.now() - start;
         console.log(`Query executed in ${duration}ms`);
