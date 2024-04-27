@@ -5,11 +5,11 @@ const tripController = require('../../controllers/itnryController');
 const authController = require('../../controllers/authController');
 
 itnryRouter
-  .get('/:itnry',
+  .get('/:itnryId',
     /**
-     *  GET METHOD MESSAGES TO ['/api/itnry']
-     *  GET ALL RECORDS: (:itnry is set to all)
-     *  GET THIS RECORD: (:itnry is set to recordId slated for retrieval)
+     *  GET METHOD MESSAGES TO ['/api/:itnryId']
+     *  GET ALL RECORDS: (:itnryId is set to all)
+     *  GET THIS RECORD: (:itnryId is set to itnryId slated for retrieval)
      * 
      */ 
 
@@ -20,10 +20,10 @@ itnryRouter
       return res.status(200).json(res.locals.allTrips);
     }
   )
-  .patch('/:itnry',
+  .patch('/:itnryId',
     /**
-     * PATCH METHOD HANDLER TO ['/api/itnry']
-     * EDIT THIS RECORD:  (:itnry is set to recordId slated for edit )
+     * PATCH METHOD HANDLER TO ['/api/:itnryId']
+     * EDIT THIS RECORD:  (:itnryId is set to recordId slated for edit )
      *                    ( && req.body contains edit info )
      */
 
@@ -33,7 +33,7 @@ itnryRouter
   )
   .post('/', 
     /**
-     * POST METHOD MESSAGES TO ['/api/itnry']
+     * POST METHOD MESSAGES TO ['/api/']
      * ADD A RECORD FOR USER: (no req.params && req.body contains new record information)
      */
 
@@ -48,11 +48,11 @@ itnryRouter
       return res.status(201).send(res.locals.itinerary);
     }
   )
-  .delete('/:itnry', 
+  .delete('/:itnryId', 
     /**
-     * DELETE METHOD MESSAGES TO ['/api/itnry']
-     * DELETE ALL RECORDS: (:itnry is set to all) 
-     * DELETE THIS RECORD: (:itnry is set to the tripId slated for deletion)
+     * DELETE METHOD MESSAGES TO ['/api/:itnryId']
+     * DELETE ALL RECORDS: (:itnryId is set to all) 
+     * DELETE THIS RECORD: (:itnryId is set to the itnryId slated for deletion)
      */
 
     authController.protect, 
@@ -68,6 +68,7 @@ module.exports = itnryRouter;
 
 // SAMPLE DATA
 // const travelPlans = {
+//   recordId: <recordId>,
 //   destination: 'Los Angeles, CA',
 //   startDate: 'June 2, 2024',
 //   endDate: 'June 8, 2024',
