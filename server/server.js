@@ -33,15 +33,19 @@ const HOST = process.env.HOST || 'localhost';
 app
 // ROOT ROUTE FOR FILE SERVING (NON-WEBPACK)
    .get('/', rootRouter )
-
+      /**
+       *  ['/']          (FOR ROUTER see "./rootRouter.js")
+       */
 // ROUTERS FOR ROUTING
    .use('/auth', authRouter )
+      /**
+       *  ['/auth']      (FOR ROUTER see "./routers/authRouter.js")
+       */
    .use('/api', apiRouter )
-          /**
-            * ['/api'] HAS:
-            * ['/api/itnry'] (FOR ROUTER see "./routers/apiRouters/itnryRouter.js")
-            * 
-            */
+      /**
+        * ['/api']       (FOR ROUTER see "./routers/apiRouter.js")
+        * ['/api/itnry'] (FOR ROUTER see "./routers/apiRouters/itnryRouter.js")
+        */
 
 // 404 HANDLER  (NOTE: tobe modified for OAuth)
    .use( defaultErrorHandler )
