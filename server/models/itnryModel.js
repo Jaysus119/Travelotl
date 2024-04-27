@@ -67,9 +67,9 @@ setInterval(() => {
   const query = 'DELETE FROM sessions WHERE timestamp < NOW() - INTERVAL \'5 minutes\'';
   pool.query(query, (err, res) => {
       if (err) {
-          console.error('Session cleanup failed:', err);
+          console.error('SQ: (SESSION CLEANUP) Session cleanup failed:', err);
       } else {
-          console.log('Session cleanup successful', res.rowCount, 'rows deleted');
+          console.log('SQL: (SESSION CLEANUP) Session cleanup successful', res.rowCount, 'rows deleted');
       }
   });
 }, sessionCleanupInterval);

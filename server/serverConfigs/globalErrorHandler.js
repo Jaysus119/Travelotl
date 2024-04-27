@@ -29,7 +29,7 @@ const createErr = (
   return errorObject;
 };
 
-// CREATE ERROR FACTORY
+// CREATE ERROR FACTORY (THIS IS WHAT IS CALLED FROM CONTROLLERS, ETC)
 function createError(controllerName) {
   return function({ method, type, message, statusCode, err = null }) {
       return createErr({
