@@ -26,7 +26,7 @@ itnryRouter
      * EDIT THIS RECORD:  (:itnry is set to recordId slated for edit )
      *                    ( && req.body contains edit info )
      */
-    
+
     (req, res, next)=>next(),
     (req, res, next)=>next(),
     (req, res)=>res.status(200).json('PATCH to /api/itnry'),
@@ -49,11 +49,11 @@ itnryRouter
     }
   )
   .delete('/:itnry', 
-  /**
-   * DELETE METHOD MESSAGES TO ['/api/itnry']
-   * DELETE ALL RECORDS: (:itnry is set to all) 
-   * DELETE THIS RECORD: (:itnry is set to the tripId slated for deletion)
-   */
+    /**
+     * DELETE METHOD MESSAGES TO ['/api/itnry']
+     * DELETE ALL RECORDS: (:itnry is set to all) 
+     * DELETE THIS RECORD: (:itnry is set to the tripId slated for deletion)
+     */
 
     authController.protect, 
     tripController.deleteTrip, 
@@ -78,4 +78,3 @@ module.exports = itnryRouter;
 //   loading: false,
 //   error: null,
 // }
-// 
