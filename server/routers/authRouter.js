@@ -1,24 +1,21 @@
 const express = require('express');
 const authRouter = express.Router();
 const userController = require('./../controllers/userController.js')
+const vaultController = require('./../controllers/vaultController.js')
 
 // REGISTER
 authRouter
   .post('/register',
-    (req, res, next) =>{
-      const { firstName, lastName, username, password, email } = req.body.userInfo;
-      console.log(`Received: ${firstName}, ${lastName}, ${username}, ${password}, ${email}`)
-      console.log("Welcome to the [/register] endpoint.")
-      return next();
-    },
+    (req, res, next) =>{ console.log("Welcome to the [/register] endpoint."); return next(); },
+    vaultController.registerBodyCheck,
+    vaultController.initializeUsrVault,
+    vaultController.populateUsrVault,
+    userController.checkExistance,
+    userController.hashUsrPw,
     userController.registerUser,
-    (req, res, next ) => {
-
-    },
-    (req, res) =>{
-
-      return res.status(200).json("You have exited the [/register] endpoint.")
-    }
+    vaultController.resLocalsSave,
+    vaultController.cleanupUsrVault,
+    (req, res) =>{ return res.status(200).json( res.locals ) }
   )
 
 // LOGIN

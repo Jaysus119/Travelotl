@@ -2,65 +2,116 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 const db = require('../models/itnryModel')
+const { createError } = require('../serverConfigs/globalErrorHandler.js')
 
-const userController = {};
+const userController = {
+  createErr: createError('userController')
+};
 
-userController.registerUser = async (req, res, next) => {
+userController.checkExistance = async (req, res, next) => {
+  const { email, username } = req.dataVault.userInfo;
+
   try {
-    const { firstName, lastName, username, password, email } = req.body.userInfo;
+      // CHECK IF EMAIL OR USERNAME EXISTS IN THE "USERS" TABLE
+      const query = `
+        SELECT * FROM users WHERE email = $1 OR username = $2 LIMIT 1;
+      `;
+      const values = [email, username];
+      const result = await db.query(query, values);
+      console.log(result.rows)
 
-    // check that all fields have been provided
-    if (!firstName || !lastName || !username || !password) {
-      res.status(400).json({ error: 'Please add all required fields' })
-      return;
-    }
+      if (result.rows && result.rows.length > 0) {
+        console.log('Existance: Found')
+        // IF THE QUERY RETURNS AT LEAST ONE ROW
+        // A USER WITH THE EMAIL OR USERNAME EXISTS
 
-    // // check if user already exists
-    // const userQuery = `SELECT username FROM users WHERE username = ${email};`;
-    // const userExists = await db.query(userQuery);
+          return next(userController.createErr({
+            //  SERVER MESSAGES
+            method: 'checkExistance',
+            type: 'Checking existance of user error.', 
+            //  CLIENT MESSAGES     
+            message: 'Please try a different (1) username and/or (2) email.  User already exists.',
+            statusCode: 409,
+          })
+        )
+      } else {
+        // NO USER WITH THE EMAIL OR USERNAME EXISTS
+        console.log('Existance: None Found')
+        return next(); 
+      }
+  } catch (err) {
+      console.error('Database error:', err);
+      return next(userController.createErr({
+        //  SERVER MESSAGES
+        err,
+        method: 'checkExistance',
+        type: 'Database error', 
+        //  CLIENT MESSAGES     
+        message: 'Internal Server Error',
+        //  DEFAUT STATUS USED
 
-    // // console.log(userExists);
-    // if (userExists) {
-    //   res.status(400).json({ error: 'User already exists'});
-    //   return;
-    // }
+      })
+    );
+  }
+}
+userController.hashUsrPw = async (req, res, next) => {
 
-    // hash password using bcrypt
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const insertUser = `INSERT INTO users (password, username, firstName, lastName)
-    VALUES ('test', 'test', 'test', 'test');`
+  try {
+    const { password } = req.dataVault.userInfo;
+    
+    // GENERATE SALT ROUNDS AND HASH
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    console.log('right before query')
+    // OVERWRITE PW WITH HASHED PW
+    req.dataVault.userInfo.password = hashedPassword;
 
-    // create user
-    db.query(insertUser, (error, results) => {
-      if (error) console.log(error);
-      console.log('result: ', results)
-    });
-    // console.log('user: ', user);
-
-    // const idQuery = `SELECT id FROM users WHERE username = ${email};`
-
-    // const userID = await db.query(idQuery);
-    // console.log('user ID: ', userID);
-
-    // res.locals.userToken = generateToken(user.id)
-
-
-    if (firstName) {
-      return next();
-    } else {
-      res.status(400).json({ error: 'Invalid user data'})
-    }
+    return next();
 
   } catch (err) {
-    const error = {
-      log: 'userController.registerUser',
-      message: { err: 'Error in registerUser controller'}
-    };
-    return next(error);
-  }
+    console.error("Error hashing password:", err);
+    return next(userController.createErr({
+      //  SERVER MESSAGES
+      err,
+      method: 'hashUsrPw',
+      type: 'Error hashing/processing the password.', 
+      //  CLIENT MESSAGES     
+      message: 'Internal Server Error',
+      //  DEFAUT STATUS USED
+    })
+  )}
+}
+
+userController.registerUser = async (req, res, next) => {
+
+    // DATAVAULT USED AS IT HAS HASHED PW
+    const { email, username, password, firstName, lastName } = req.dataVault.userInfo;
+
+    const insertUserQuery = `
+      INSERT INTO users (email, username, password, firstName, lastName)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `
+  try {
+    // CREATE USER IN DB
+    const result = await db.query(insertUserQuery, [email, username, password, firstName, lastName])  
+
+    req.dataVault.userInfo.roles = req.dataVault.userInfo.roles || [];
+    req.dataVault.userInfo.roles = result.rows[0].roles
+
+    return next();
+
+  } catch (err) {
+    return next(userController.createErr({
+      //  SERVER MESSAGES
+      err,
+      method: 'registerUser',
+      type: 'Database Error.', 
+      //  CLIENT MESSAGES     
+      message: 'Failed to register user due to server error.',
+      //  DEFAUT STATUS USED);
+    })
+  )}
 }
 
 // const loginUser = async (req, res) => {

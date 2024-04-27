@@ -13,7 +13,8 @@ const {
   POSTGRES_HOST: host,
   POSTGRES_MAX: max,
   POSTGRES_IDLETIMEOUTMILLIS: idleTimeoutMillis,
-  POSTGRES_CONNECTIONTIMEOUTMILLIS: connectionTimeoutMillis
+  POSTGRES_CONNECTIONTIMEOUTMILLIS: connectionTimeoutMillis,
+  POSTGRES_SESSION_CLEANUP_INTERVAL: cleanupInterval
 } = process.env;
 
 const poolConfig = {
@@ -60,15 +61,35 @@ setInterval(() => {
     });
 }, 300000);
 
+// SESSION DELETION (PER 20 MIN)
+const sessionCleanupInterval = cleanupInterval || 1200000;
+setInterval(() => {
+  const query = 'DELETE FROM sessions WHERE timestamp < NOW() - INTERVAL \'5 minutes\'';
+  pool.query(query, (err, res) => {
+      if (err) {
+          console.error('Session cleanup failed:', err);
+      } else {
+          console.log('Session cleanup successful', res.rowCount, 'rows deleted');
+      }
+  });
+}, sessionCleanupInterval);
+
 module.exports = {
   query: (text, params, callback) => {
     const start = Date.now();
     console.log(`SQL-(DEBUG): Starting query at ${new Date(start)}.`);
     console.log(`SQL-(DEBUG): SQL Query was: ${text}`);
-    return pool.query(text, params, (err, res) => {
-        const duration = Date.now() - start;
-        console.log(`Query executed in ${duration}ms`);
-        callback(err, res);
-    });
+    return new Promise((resolve, reject) => {
+      pool.query(text, params, (err, res) => {
+          if (err) {
+              console.error(`Query failed: ${text}`, err);
+              reject(err);
+          } else {
+              const duration = Date.now() - start;
+              console.log(`Query executed in ${duration}ms`);
+              resolve(res);
+          }
+      });
+  });
   }
 };

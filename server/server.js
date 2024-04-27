@@ -5,58 +5,49 @@ const path = require ('path');
 // .ENV FILE USAGE
 require('dotenv').config();
 
-// ROUTER DECLARATIONS
-const authRouter = require('./routers/authRouter.js');
-const apiRouter = require('./routers/apiRouter.js');
-const itnryRouter = require('./routers/itnryRouter.js');
+// DEFAULT IMPORTS OF ROUTERS
+const authRouter = require('./routers/authRouter.js');    // LOGIN, REGISTER, LOGOUT, ETC
+const apiRouter = require('./routers/apiRouter.js');      // ITINERY, ETC
+const rootRouter = require('./routers/rootRouter.js');    // SERVES FILES
+
+// NAMED IMPORTS OF ERROR HANDLERS (Global and Default (e.g, 404) )
+const { 
+  globalErrorHandler, 
+  defaultErrorHandler 
+} = require('./serverConfigs/globalErrorHandler.js');
+
+// NAMED IMPORTS OF MIDDLEWARE / SERVER CONFIGS
+const { 
+  setupMiddlewares, 
+  startServer 
+} = require('./serverConfigs/serverConfigs.js');
 
 // SERVER DECLARATIONS
 const app = express();
+
+setupMiddlewares(app);
+
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 
-app.use(express.json())
-   .use(express.static(path.join(__dirname, 'client')))
-   .use(express.urlencoded({ extended: true }))
-
+app
 // ROOT ROUTE FOR FILE SERVING (NON-WEBPACK)
-   .get('/', 
-      (req, res) => {
-        res.sendFile(path.join(__dirname,'../index.html'))
-      }
-    )
+   .get('/', rootRouter )
 
-// ROUTER ROUTING
-   .use('/itnry', itnryRouter)
-   .use('/auth', authRouter)
-   .use('/api', apiRouter)
+// ROUTERS FOR ROUTING
+   .use('/auth', authRouter )
+   .use('/api', apiRouter )
+          /**
+            * ['/api'] HAS:
+            * ['/api/itnry'] (FOR ROUTER see "./routers/apiRouters/itnryRouter.js")
+            * 
+            */
 
 // 404 HANDLER  (NOTE: tobe modified for OAuth)
-   .use(
-      (req, res) => {
-        res.status(404).send('Not Found');
-      }
-    )
+   .use( defaultErrorHandler )
 
-//GLOBAL ERROR HANDLER
-   .use(
-      (err, req, res, next) => {
-        const defaultErr = {
-          log: 'Express error handler caught unknown middleware error',
-          status: 500,
-          message: { err: 'An error occured' },
-        };
-        const errorObj = Object.assign({}, defaultErr, err);
-        console.log(errorObj.log);
-        return res.status(errorObj.status).json(errorObj.message);
-      }
-    )
+// USE GLOBAL ERROR HANDLER
+   .use( globalErrorHandler );
 
 //START SERVER COMMAND
-   .listen(
-      PORT,
-      HOST, 
-      () => {
-        console.log(`Server is running on http://${HOST}:${PORT} ...`)
-      }
-    );
+startServer( app, PORT, HOST );
