@@ -8,11 +8,11 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "concurrently \"webpack serve --open\" \"nodemon server/server.js\"",
     "build": "webpack",
-    "serve": "nodemon server/server.js",
-    "server": "nodemon",
-    "start": "webpack serve --hot --progress"
+    "backend:start": "nodemon server/server.js",
+    "frontend:start": "webpack serve --hot --progress",
+    "start": "concurrently \"npm backend:start\" \"npm frontend:start\"",
+    "dev": "concurrently \"webpack serve --open\" \"nodemon server/server.js\""
   },
   "dependencies": {
     "@heroicons/react": "^2.1.3",
@@ -29,6 +29,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.1",
     "openai": "^4.33.1",
+    "pg": "^8.11.5",
     "react": "^18.2.0",
     "node-fetch": "^3.3.2",
     "react-dom": "^18.2.0",
