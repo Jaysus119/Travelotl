@@ -1,6 +1,13 @@
+// NAMED IMPORT TO USE GLOBAL ERROR CONTROLLER ON ALL ERRORS
 const { createError } = require('./../serverConfigs/globalErrorHandler.js')
 
+
 const vaultController = {
+  /**
+   * INITIALIZE "parameter controller" of NAMED IMPORT of 'FACTORY FUNCTION' 
+   * labelled createError to string argument of 'vaultController'
+   */
+
   createErr: createError('vaultController')
 };
 

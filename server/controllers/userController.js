@@ -1,10 +1,19 @@
+// DEFAULT IMPORTS FOR JWT/BCRYPT
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const db = require('../models/itnryModel')
+// DEFAULT IMPORT FOR SQL
+const db = require('../db_models/itnryModel.js')
+
+// NAMED IMPORT TO USE GLOBAL ERROR CONTROLLER ON ALL ERRORS
 const { createError } = require('../serverConfigs/globalErrorHandler.js')
 
 const userController = {
+    /**
+   * INITIALIZE "parameter controller" of NAMED IMPORT of 'FACTORY FUNCTION' 
+   * labelled createError to string argument of 'userController'
+   */
+
   createErr: createError('userController')
 };
 

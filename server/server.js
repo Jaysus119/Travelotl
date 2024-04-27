@@ -25,7 +25,7 @@ const {
 // SERVER DECLARATIONS
 const app = express();
 
-setupMiddlewares(app);
+setupMiddlewares( app );
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';

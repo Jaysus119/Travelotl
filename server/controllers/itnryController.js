@@ -6,7 +6,7 @@ const app = express();
 const OpenAI = require('openai');
 const openai = new OpenAI({ apiKey: process.env.OPEN_AI_API_KEY });
 
-const db = require('../models/itnryModel')
+const db = require('../db_models/itnryModel.js')
 
 // TEST DATA - DELETE WHEN FINISHEDßß
 // const travelPlans = {

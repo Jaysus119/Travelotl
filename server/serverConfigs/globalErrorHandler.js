@@ -30,7 +30,7 @@ const createErr = (
 };
 
 // CREATE ERROR FACTORY (THIS IS WHAT IS CALLED FROM CONTROLLERS, ETC)
-function createError(controllerName) {
+function createError( controllerName ) {
   return function({ method, type, message, statusCode, err = null }) {
       return createErr({
         controller: controllerName,
@@ -44,7 +44,7 @@ function createError(controllerName) {
 }
 
 // GLOBAL ERROR HANDLER
-const globalErrorHandler = (err, req, res, next) => {
+const globalErrorHandler = ( err, req, res, next ) => {
   const defaultErr = {
     log: `Express error handler caught unknown middleware error ${JSON.stringify(err, null, 2)}`,
     status: 500,
