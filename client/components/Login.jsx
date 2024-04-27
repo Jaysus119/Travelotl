@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import Header from './Header.jsx';
+// import Header from './Header.jsx';
 
 const Login = () => {
     // Initialize empty state
@@ -42,7 +42,7 @@ const Login = () => {
 
    return(
     <div>
-        <Header />
+        {/* <Header /> */}
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
             <label>
