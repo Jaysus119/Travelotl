@@ -123,6 +123,14 @@ userController.registerUser = async (req, res, next) => {
   )}
 }
 
+userController.loginUser = async (req, res, next) => {
+
+  const { email, username, password, firstName, lastName } = req.dataVault.userInfo;
+
+  
+
+}
+
 // const loginUser = async (req, res) => {
 //   console.log('request to login user', req.body);
 //   const { email, password } = req.body;
