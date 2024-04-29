@@ -39,8 +39,8 @@ const Register = () => {
       // Check for ok response and redirect back to login
       console.log(res)
       if (res.ok) {
-        //const user = await res.json();
-        //console.log(user);
+        // const user = await res.json();
+        // console.log(user);
         navigate('/login');
       }
    };

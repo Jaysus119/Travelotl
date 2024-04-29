@@ -5,6 +5,12 @@ const bcrypt = require('bcryptjs');
 // DEFAULT IMPORT FOR SQL
 const db = require('../db_models/itnryModel.js')
 
+//require dotenv config
+require('dotenv').config();
+
+//bring in secret key for jwt tokens
+const secretKey = process.env.SECRET_KEY;
+
 // NAMED IMPORT TO USE GLOBAL ERROR CONTROLLER ON ALL ERRORS
 const { createError } = require('../serverConfigs/globalErrorHandler.js')
 
@@ -16,6 +22,17 @@ const userController = {
 
   createErr: createError('userController')
 };
+
+function generateToken (user) {
+  const payload = {
+    userId: user.id,
+    email: user.email,
+  };
+
+  const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+
+  return token;
+}
 
 userController.checkExistance = async (req, res, next) => {
   const { email, username } = req.dataVault.userInfo;
@@ -62,7 +79,9 @@ userController.checkExistance = async (req, res, next) => {
       })
     );
   }
-}
+};
+
+
 userController.hashUsrPw = async (req, res, next) => {
 
   try {
@@ -89,7 +108,7 @@ userController.hashUsrPw = async (req, res, next) => {
       //  DEFAUT STATUS USED
     })
   )}
-}
+};
 
 userController.registerUser = async (req, res, next) => {
 
@@ -121,43 +140,53 @@ userController.registerUser = async (req, res, next) => {
       //  DEFAUT STATUS USED);
     })
   )}
-}
+};
 
 userController.loginUser = async (req, res, next) => {
 
-  const { email, username, password, firstName, lastName } = req.dataVault.userInfo;
+  const { email, username, password } = req.dataVault.userInfo;
 
-  
+  try {
+
+    const query = `SELECT password FROM users WHERE email = $1;`
+    const result = await db.query(query, [email]);
+
+
+    if (user.rows.length > 0) {
+      const user = result.rows[0];
+      console.log('user: ', user);
+      const hashedPassword = user.password;
+
+      const isPassValid = await bcrypt.compare(password, hashedPassword);
+
+      if (!isPassValid) {
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+
+      const token = generateToken(user);
+      const userInfo = {
+        email: user.email,
+        username: user.username,
+        roles: ['users']
+      }
+
+      return res.status(200).json({ userInfo, token });
+      next();
+
+    } else {
+      return res.status(401).json({ message: "Invalid username or password" });
+    };
+
+  } catch (err) {
+    return next(userController.createErr({
+      err,
+      method: 'loginUser',
+      type: 'Database Error.', 
+      message: 'Failed to login user due to server error.',
+    })
+  )};
 
 }
-
-// const loginUser = async (req, res) => {
-//   console.log('request to login user', req.body);
-//   const { email, password } = req.body;
-
-//   try {
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(400).json({ error: 'User not found' });
-//     }
-
-//     const isValid = await bcrypt.compare(password, user.password);
-//     if (!isValid) {
-//       return res.status(400).json({ error: 'Invalid credentials' });
-//     }
-
-//     return res.status(200).json({
-//       _id: user._id,
-//       firstName: user.firstName,
-//       lastName: user.lastName,
-//       email: user.email,
-//       token: generateToken(user._id),
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// };
 
 // const getUser = async (req, res) => {
 //   const user = await User.findById(req.user.id);
