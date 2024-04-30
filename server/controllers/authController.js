@@ -10,7 +10,8 @@ const authController = {    /**
 * labelled createError to string argument of 'authController'
 */
 
-createErr: createError('authController')};
+  createErr: createError('authController')
+};
 
 authController.jwtReqCheck = (req, res, next) => {
   const { authorization } = req.headers;

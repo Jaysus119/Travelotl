@@ -55,7 +55,7 @@ vaultController.initializeItnryVault = (req, res, next) =>{
 
   try{
     req.dataVault = req.dataVault || {};
-
+    console.log("REGISTER:: vaultController.initializeItnryVault")
     const structdefDataVault = [
       { keys: ['token'], defaultValue: '' }, // Set token to a default empty string
       { keys: ['userInfo', 'itinerary'], defaultValue: {} }
@@ -119,7 +119,7 @@ vaultController.userBodyCheck = (req, res, next ) => {
 }
 
 vaultController.populateUsrVault = (req, res, next) =>{
-
+  console.log("REGISTER::  vaultController.populateUsrVault")
   // TRANFER FROM req.body TO req.dataVault
   if (req.body.userInfo) {
     const { firstName, lastName, email, password, username } = req.body.userInfo;

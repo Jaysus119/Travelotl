@@ -36,7 +36,7 @@ function generateToken (user) {
 
 userController.checkExistance = async (req, res, next) => {
   const { email, username } = req.dataVault.userInfo;
-
+  console.log("REGISTER::  userController.checkExistance")
   try {
       // CHECK IF EMAIL OR USERNAME EXISTS IN THE "USERS" TABLE
       const query = `
