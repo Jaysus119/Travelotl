@@ -3,11 +3,10 @@
  * @description stateful component that handles login functionality
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // import Header from './Header.jsx';
-
 const Login = () => {
     // Initialize empty state
     const [email, setEmail] = useState('');
@@ -39,6 +38,35 @@ const Login = () => {
         navigate('/');
       }
    };
+   const CLIENT_ID = "fb26bcfe259d6f2f503c"
+
+   useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString)
+    const codeParams = urlParams.get("code")
+    console.log(codeParams)
+
+    if(codeParams && localStorage.getItem("accessToken") === null){
+      async function getAccessToken () {
+        await fetch("http://localhost:8080/successlogin?code="+ codeParams, {
+          method: "GET"
+        }).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log(data)
+          if(data.access_token){
+            localStorage.setItem("accessToken", data.access_token)
+          }
+        })
+
+      }
+      getAccessToken()
+    }
+   }, [])
+
+    function logIn () {
+        window.location.assign("https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID)
+    }
 
    return(
     <div>
@@ -55,7 +83,9 @@ const Login = () => {
                 <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Not 1234'/>
             </label>
             <br />
-            <button type='submit'>Login</button>
+            <button onClick = {logIn}>
+              Login Through Github
+            </button>
         </form>
     </div>
    );

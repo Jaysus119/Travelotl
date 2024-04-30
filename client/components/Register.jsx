@@ -48,6 +48,11 @@ const Register = () => {
         navigate('/login');
       }
    };
+   const CLIENT_ID = "fb26bcfe259d6f2f503c"
+
+    function logIn () {
+        window.location.assign("https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID)
+    }
 
    return(
     <div>
@@ -79,7 +84,9 @@ const Register = () => {
                 <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Not 1234'/>
             </label>
             <br />
-            <button type='submit'>Register</button>
+            <button onClick = {logIn}>
+              Register Through Github
+            </button>
         </form>
     </div>
    );
