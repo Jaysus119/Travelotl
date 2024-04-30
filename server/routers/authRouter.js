@@ -7,14 +7,14 @@ const vaultController = require('./../controllers/vaultController.js')
 authRouter
   .post('/register',
     (req, res, next) =>{ console.log("Welcome to the ['/auth/register'] endpoint."); return next(); },
-    vaultController.registerBodyCheck,
-    vaultController.initializeUsrVault,
+    // vaultController.registerBodyCheck,
+    vaultController.initializeItnryVault,
     vaultController.populateUsrVault,
     userController.checkExistance,
     userController.hashUsrPw,
     userController.registerUser,
     vaultController.resLocalsSave,
-    vaultController.cleanupUsrVault,
+    vaultController.cleanupItnryVault,
     (req, res, next) =>{ console.log("Bye from the ['/auth/register'] endpoint."); return next(); },
     (req, res) => res.status(200).json( res.locals )
   )
