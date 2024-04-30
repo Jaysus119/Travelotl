@@ -117,6 +117,7 @@ userController.registerUser = async (req, res, next) => {
     // DATAVAULT USED AS IT HAS HASHED PW
     const { email, username, password, firstName, lastName } = req.dataVault.userInfo;
 
+    // RETURNING * MAKES SQL QUERY RETURN THE CREATED DB ENTRY
     const insertUserQuery = `
       INSERT INTO users (email, username, password, firstName, lastName)
       VALUES ($1, $2, $3, $4, $5)
@@ -126,7 +127,6 @@ userController.registerUser = async (req, res, next) => {
     // CREATE USER IN DB
     const result = await db.query(insertUserQuery, [email, username, password, firstName, lastName])  
 
-    req.dataVault.userInfo.roles = req.dataVault.userInfo.roles || [];
     req.dataVault.userInfo.roles = result.rows[0].roles
 
     return next();
