@@ -49,10 +49,12 @@ app
         * ['/api']       (FOR ROUTER see "./routers/apiRouter.js")
         * ['/api/itnry'] (FOR ROUTER see "./routers/apiRouters/itnryRouter.js")
         */
-   .get('/successlogin', (req, res) => {
-      return res.redirect("/success")
-   })
-// 404 HANDLER  (NOTE: tobe modified for OAuth)
+   .get('/successlogin', // OAUTH
+      (req, res) => {
+        return res.redirect("/success");
+      }
+    )
+// 404 HANDLER
    .use( defaultErrorHandler )
 
 // USE GLOBAL ERROR HANDLER
