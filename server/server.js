@@ -5,6 +5,9 @@ const path = require ('path');
 // .ENV FILE USAGE
 require('dotenv').config();
 
+//Stuff I just added today 4/27
+const client_id = "9d73905a903015abf5f249a7e899a4ddb725f15d"
+
 // DEFAULT IMPORTS OF ROUTERS
 const authRouter = require('./routers/authRouter.js');    // LOGIN, REGISTER, LOGOUT, ETC
 const apiRouter = require('./routers/apiRouter.js');      // ITINERY, ETC

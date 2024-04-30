@@ -60,5 +60,7 @@ const Login = () => {
     </div>
    );
 };
-
+//add a button that sends the code and state to the backend
+//create a seperate folder named oauth
+//import methods of oauth here
 export default Login;

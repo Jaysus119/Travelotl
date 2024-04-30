@@ -34,6 +34,16 @@ vaultController.initializeUsrVault = (req, res, next) =>{
    *    token:  <Store token>
    *  }
    */
+  req.dataVault = {
+    userInfo: {
+      firstName: "Jane",
+      lastName: "Doe",
+      email: "Re_al_T_V@aol.com",
+      password: "Delta63/*",
+      userName: "DammitJanet"
+    }
+
+  }
 
   try{
     req.dataVault = req.dataVault || {};
