@@ -27,7 +27,7 @@ const Login = () => {
       e.preventDefault();
 
       // Make fetch request with submitted data
-      const res = await fetch('/api/users/login', {
+      const res = await fetch('/auth/login', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({email, password})
