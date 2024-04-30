@@ -5,12 +5,16 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Logo from '../assets/AdobeStock_678891736_Preview[axolotl].png'
+import { useNavigate } from "react-router-dom";
+import Logo from '../assets/Travelotl_Logo.png'
 // import Header from './Header.jsx';
 import travelVideo from '../assets/AdobeStock_118726863_travel_Preview.mp4'
 
 const Main = () => {
-    
+    const navigate = useNavigate();
+    function loginPageClick (){
+        navigate('/login');
+    }
     return(
        <>
        <header className="flex flex-col items-center justify-center min-h-screen size-1 overflow-hidden">
@@ -29,20 +33,19 @@ const Main = () => {
                     Your browser does not support the video tag.
                 </video>
             <div>
-                <img src={Logo} style={{height: '100px', width: '100px', position : 'absolute', left: '5%', top: '1%', zIndex: '3', transform: 'translateX(-50%)'   }} alt= 'Travolotl Logo'/>
+                <img src={Logo} style={{height: '200px', width: '300px', position : 'absolute', left: '10%', top: '1%', zIndex: '3', transform: 'translateX(-50%)'   }} alt= 'Travolotl Logo'/>
             </div>
-           <div className= 'text-4xl mt-20 text-white text-center z-50'>
-                <h1 style={{fontFamily:'poppins'}}>
-                Let us plan the trip of your dreams...
-                </h1> 
-                <Link to='/login' id='start'> Click here to begin your adventure!</Link>
-           </div>
-           <div>
-           {/* <button style={{fontFamily:'poppins'}} onClick= {loginPageClick}
-                className="relative shadow-2xl hover:scale-125
-                hover:bg-opacity-50 shadow-white z-30 p-5 text-2xl text-white bg-blue-300 bg-opacity-70 rounded-xl mt-10">
-                Click here to begin your adventure!
-            </button> */} 
+            <div style={{position : 'absolute', left: '50%', top: '70%', zIndex: '3', transform: 'translateX(-50%)'   }}>
+                <h1 className="text-3xl font-semibold text-center text-white mt-[-50px] mb-8">
+                    Time to plan the trip of your dreams...
+                </h1>
+            </div>
+           <div style={{ left: '50%', top: '20%'}}>
+                <button style={{fontFamily:'poppins'}}  onClick= {loginPageClick}
+                    className="relative shadow-2xl hover:scale-125
+                    hover:bg-opacity-50 shadow-white z-30 p-5 text-2xl text-white bg-blue-300 bg-opacity-70 rounded-xl mt-10">
+                    Click here to begin your adventure!
+                </button>
            </div>
          </header>
       </>
