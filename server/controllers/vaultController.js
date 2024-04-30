@@ -96,7 +96,7 @@ vaultController.registerBodyCheck = (req, res, next ) => {
 vaultController.populateUsrVault = (req, res, next) =>{
 
   // TRANFER FROM req.body TO req.dataVault
-  if (req.body.userInfo && req.body.token) {
+  if (req.body.userInfo) {
     const { firstName, lastName, email, password, username } = req.body.userInfo;
     req.dataVault.userInfo = {
         firstName: firstName || req.dataVault.userInfo.firstName,
@@ -105,8 +105,6 @@ vaultController.populateUsrVault = (req, res, next) =>{
         password: password || req.dataVault.userInfo.password,
         username: username || req.dataVault.userInfo.username
     };
-
-    req.dataVault.token = req.body.token || req.dataVault.token;
   }
 
   return next();
@@ -116,9 +114,9 @@ vaultController.resLocalsSave = (req, res, next) =>{
   /*
   *  CLEANUP OF req.dataVault
   */
+ console.log('in reslocalssave');
   const { username, roles } = req.dataVault.userInfo;
 
-  res.locals.userInfo =   res.locals.userInfo || {};
   res.locals.userInfo.username = res.locals.userInfo.username || {};
   res.locals.userInfo.roles = res.locals.userInfo.roles || [];
   res.locals.token = res.locals.token || {};
