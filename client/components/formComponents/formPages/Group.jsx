@@ -1,21 +1,43 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import { updateItinerary } from '../../reducers/itineraryReducer';
-import Loader from '../Loader';
+/**
+ * @file Renders the fifth page of the form.
+ * Allows the user to input the number of travelers
+ * and select a group description.
+ * 
+ * @module Group
+ * @returns {JSX.Element} The rendered fifth page of the form.
+ */
+// Package dependencies
+import { forwardRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { updateGroupDescription } from '../../reducers/tripReducer';
-import { useState } from 'react';
+// Redux actions
+import { updateTravelers, updateGroupDescription, updateStep, updateTransitionDirection } from "../../../reducers/tripReducer";
 
-const Page6 = () => {
-  const { groupDescription } = useSelector(state => state.trip);
+// Components
+import Loader from "../../Loader";
 
-  const [loading, setLoading] = useState(false);
-
-  const formData = useSelector(state => state.trip);
+const Group = forwardRef((props, ref) => {
+  const { travelers, groupDescription, step, transitionDirection } = useSelector(state => state.trip);
+  const { loading } = useSelector(state => state.itinerary);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
+  /**
+   * Handles the input change event.
+   * Updates the number of travelers in the Redux store.
+   * 
+   * @param {Event} e - The input change event object.
+   */
+  const handleInputChange = e => {
+    const { value } = e.target;
+    dispatch(updateTravelers(value));
+  };
+
+  /**
+   * Updates the group description value in the Redux store when the input changes.
+   * 
+   * @param {Event} e - The event object.
+   */
   const handleDescriptionChange = e => {
     const { value, checked } = e.target;
     if (checked) {
@@ -23,43 +45,45 @@ const Page6 = () => {
     }
   };
 
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      console.log('data sent to back end server to make API request');
-      const response = await fetch('/api/trip/build', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
-        },
-        body: JSON.stringify(formData)
-      });
-      const parsedData = await response.json();
-      if (response.ok) {
-        dispatch(updateItinerary(parsedData.itinerary));
-        navigate('/itinerary');
-        setLoading(false);
-      } else {
-        throw new Error('failed to retrieve data');
-      }
-    } catch (error) {
-      console.error('Error with request:', error);
-    }
-  }
-
+  /**
+   * Handles the key down event.
+   * If the Enter key is pressed, calls the handleClick function.
+   * @async
+   * @param {Event} event - The event object.
+   */ 
   const handleKeyDown = async (event) => {
     if (event.key === 'Enter') {
-      await handleClick();
+      if (transitionDirection === 'right') dispatch(updateTransitionDirection('left'));
+      dispatch(updateStep(step + 1));
     }
   };
 
-return (
-    <div className="bg-gray-300 rounded border-4 border-black ">
-      <div>{
-        loading ? <div id='loader'><Loader/></div> :
+  return (
+    <div ref={ref} /* className="bg-gray-300 rounded border-4 border-black" */>
+      
+      { loading ?
+        
+        // Display the loader component if the loading state is true
+        <div id='loader'>
+          <Loader />
+        </div> :
+
+        // Display the form page if the loading state is false
         <>
           <p>What best describes your travel group...</p>
+          <label className="text-2xl">
+            No. of Travelers:
+            <input
+              className="typed-input"
+              type="number"
+              name="travelers"
+              value={travelers}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+            />
+          </label>
+
+          {/* Radio buttons for selecting the group description */}
           <ul className="groups">
             <li>
               <label className='group-card'>
@@ -88,7 +112,7 @@ return (
               </label>
             </li>
             <li>
-              <label className='group-card'> 
+              <label className='group-card'>
                 <input
                   type="radio"
                   name="groupDescription"
@@ -127,16 +151,10 @@ return (
               </label>
             </li>
           </ul>
-          <div>
-            <Link to='/form/page5'>
-              <button className='m-4 underline text-blue-600' type='button'>Back</button>
-            </Link>
-            <button className='m-4 underline text-blue-600' type='submit' onClick={handleClick}>Submit</button>
-          </div>
-        </>  
-      }</div>
+        </>
+      }
     </div>
   );
-};
+});
 
-export default Page6;
+export default Group;

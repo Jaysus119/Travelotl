@@ -1,17 +1,30 @@
+/**
+ * @file Renders the third page of the form.
+ * Allows the user to select activities they are interested in.
+ * 
+ * @module Activities
+ * @returns {JSX.Element} The rendered third page of the form.
+ */
+// Package dependencies
+import { forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
 
-import { updateActivities } from '../../reducers/tripReducer';
+// Redux actions
+import { updateActivities, updateStep, updateTransitionDirection } from '../../../reducers/tripReducer';
 
-const Page3 = () => {
-  const navigate = useNavigate();
-
-  const { activities } = useSelector(state => state.trip);
-
-  const dispatch = useDispatch();
+const Activities = forwardRef((props, ref) => {
+  const { activities, step, transitionDirection } = useSelector(state => state.trip);
 
   const selected = new Array(...activities);
+  
+  const dispatch = useDispatch();
 
+  /**
+   * Handles the change event of the activities checkboxes.
+   * Updates the selected activities and dispatches an action to update the state.
+   * 
+   * @param {Event} e - The event object.
+   */
   const handleActivitiesChange = e => {
     const { value, checked } = e.target;
     if (checked) {
@@ -23,16 +36,25 @@ const Page3 = () => {
     dispatch(updateActivities(selected));
   }
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      navigate('/form/page4');
+  /**
+   * Handles the keydown event.
+   * If the Enter key is pressed, prevents the default behavior and navigates to the next page.
+   * 
+   * @param {Event} e - The event object.
+   */
+  const handleKeyDown = e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (transitionDirection === 'right') dispatch(updateTransitionDirection('left'));
+      dispatch(updateStep(step + 1));
     }
   };
 
   return (
-    <div className="bg-gray-300 rounded border-4 border-black ">
+    <div ref={ref} /* className="bg-gray-300 rounded border-4 border-black" */>
       <p className='text-2xl text-center'>Select activities you are interested in...</p>
+
+      {/* Activities checkboxes */}
       <ul className="activities">
         <li className='activity-card'>
           <label>
@@ -107,16 +129,8 @@ const Page3 = () => {
           </label>
         </li>
       </ul>
-      <div>
-        <Link to='/form/page2'>
-          <button className='m-4 underline text-blue-600' type='button'>Back</button>
-        </Link>
-        <Link to='/form/page4'>
-          <button className='m-4 underline text-blue-600' type='button'>Next</button>
-        </Link>
-      </div>
     </div>
   );
-};
+});
 
-export default Page3;
+export default Activities;
